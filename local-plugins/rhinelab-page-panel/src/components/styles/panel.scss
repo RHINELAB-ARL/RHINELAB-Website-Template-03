@@ -1,0 +1,82 @@
+// Sphinx-style panel below the Explorer. Falls back to Quartz variables.
+.mt-panel {
+  margin-top: 1.4rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--mt-rule, var(--lightgray));
+  font-size: 0.8rem;
+
+  .mt-block { margin: 0 0 1rem; }
+
+  h6 {
+    margin: 0 0 0.35rem;
+    font-family: var(--codeFont);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--mt-faint, var(--gray));
+  }
+
+  ul { list-style: none; margin: 0; padding: 0; }
+  li { margin: 0.1rem 0; }
+
+  a,
+  .mt-linklike {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: var(--mt-fg, var(--darkgray));
+    cursor: pointer;
+    text-decoration: none;
+    transition: color 0.12s;
+
+    svg { flex: none; color: var(--mt-faint, var(--gray)); transition: color 0.12s; }
+    &:hover { color: var(--mt-link, var(--secondary)); svg { color: inherit; } }
+  }
+
+  a.mt-topic {
+    align-items: baseline;
+    background: none;
+    line-height: 1.35;
+    .mt-dir {
+      flex: none;
+      font-family: var(--codeFont);
+      font-size: 0.7rem;
+      min-width: 1.1rem;
+      text-align: center;
+      padding: 0 0.2rem;
+      border: 1px solid var(--mt-rule-strong, var(--lightgray));
+      border-radius: 2px;
+      color: var(--mt-muted, var(--gray));
+    }
+  }
+
+  .mt-meta dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.15rem 0.7rem;
+    margin: 0;
+    dt { color: var(--mt-faint, var(--gray)); }
+    dd { margin: 0; color: var(--mt-fg, var(--darkgray)); font-variant-numeric: tabular-nums; }
+  }
+
+  .mt-keys {
+    font-size: 0.7rem;
+    line-height: 1.9;
+    color: var(--mt-faint, var(--gray));
+    kbd {
+      font-family: var(--codeFont);
+      font-size: 0.66rem;
+      padding: 0.08rem 0.32rem;
+      border: 1px solid var(--mt-rule-strong, var(--lightgray));
+      border-bottom-width: 2px;
+      border-radius: 2px;
+      background: var(--mt-surface, var(--lightgray));
+      color: var(--mt-muted, var(--gray));
+    }
+  }
+}

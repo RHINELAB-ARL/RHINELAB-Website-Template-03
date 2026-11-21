@@ -1,3 +1,777 @@
-@use "./base.scss";
+@use "./variables.scss" as *;
 
 // put your custom CSS here!
+// ═══════════════════════════════════════════════════════════════════════
+//  RHINELAB docs theme for Quartz 5  (port of the Quarto extension)
+//
+//  Where things live
+//    quartz.config.yaml  theme.colors  → the seven Quartz colour keys
+//                                         (light, lightgray, gray, darkgray,
+//                                          dark, secondary, tertiary) + highlight
+//    this file                          → every other token, and every rule
+//
+//  One rule set, two palettes: all rules read var(--mt-*); only the token
+//  block below differs between light and dark.
+//
+//  Quartz keeps its own styles in cascade layers; this file is unlayered, so
+//  it wins without !important.
+// ═══════════════════════════════════════════════════════════════════════
+
+// color-mix replacement for the old rgba($token, .09)
+@function tint($var, $pct) {
+  @return #{"color-mix(in srgb, var(#{$var}) #{$pct}, transparent)"};
+}
+
+// ── 0. tokens ──────────────────────────────────────────────────────────
+// Mapped tokens alias the Quartz keys, so the palette is edited in one place.
+:root {
+  --mt-bg: var(--light);
+  --mt-rule: var(--lightgray);
+  --mt-muted: var(--gray);
+  --mt-fg: var(--darkgray);
+  --mt-fg-strong: var(--dark);
+  --mt-link: var(--secondary);
+  --mt-accent: var(--tertiary);
+
+  // light palette: tokens Quartz has no key for
+  --mt-surface: #f4f5f7;      // sidebar, table heads, panels
+  --mt-surface-2: #e9ecf0;    // hover, active rows
+  --mt-faint: #8a939d;
+  --mt-rule-strong: #b3bbc4;
+  --mt-teal: #1b7c8f;         // house teal (italic terms)
+  --mt-code-fg: #3f4f9f;
+  --mt-code-bg: #eef1f4;
+  --mt-block-bg: #f6f8fa;
+  --mt-ok: #1a7f37;
+  --mt-warn: #9a6700;
+  --mt-err: #c42b1c;
+  --mt-info: #0b5cad;
+  --mt-sel: rgba(27, 124, 143, 0.18);
+  --mt-mono: var(--codeFont);
+}
+html[saved-theme="dark"] {
+  --mt-surface: #1a1d21;
+  --mt-surface-2: #23272d;
+  --mt-faint: #67707b;
+  --mt-rule-strong: #424a54;
+  --mt-teal: #4db8ca;
+  --mt-code-fg: #b4c8ff;
+  --mt-code-bg: #22262c;
+  --mt-block-bg: #181b1f;
+  --mt-ok: #4ac26b;
+  --mt-warn: #d4a72c;
+  --mt-err: #ff6b5e;
+  --mt-info: #6aaeff;
+  --mt-sel: rgba(77, 184, 202, 0.28);
+}
+
+html { font-size: 14px; }                 // dense, Sphinx-like
+body {
+  line-height: 1.55;
+  font-feature-settings: "kern" 1, "liga" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+::selection { background: var(--mt-sel); color: inherit; }
+
+// Quartz renders links semibold; the Quarto theme used normal weight
+a { font-weight: inherit; }
+
+kbd, .kbd {
+  font-family: var(--mt-mono);
+  font-size: 0.78em;
+  line-height: 1.2;
+  padding: 0.02em 0.35em;
+  border-radius: 2px;
+  border: 1px solid var(--mt-rule-strong);
+  border-bottom-width: 2px;
+  background: var(--mt-surface);
+  color: var(--mt-fg);
+  box-shadow: none;
+}
+
+// quiet scrollbars where things scroll
+.sidebar, pre, .explorer-content, .table-container {
+  scrollbar-width: thin;
+  scrollbar-color: var(--mt-rule-strong) transparent;
+}
+
+// ── 1. layout: sidebar 270 / body 860 / margin 230 ─────────────────────
+@media (min-width: 1200px) {
+  .page > #quartz-body {
+    grid-template-columns: 270px minmax(0, 860px) 230px;
+    justify-content: center;
+    column-gap: 1.25rem;
+  }
+}
+@media (min-width: 801px) and (max-width: 1199px) {
+  .page > #quartz-body { grid-template-columns: 270px minmax(0, 1fr); column-gap: 1.25rem; }
+}
+@media (min-width: 801px) {
+  .page > #quartz-body .sidebar { padding: 2.25rem 0.9rem 2rem 1rem; }
+  .page > #quartz-body .sidebar.left { border-right: 1px solid var(--mt-rule); }
+  .page > #quartz-body .page-header { margin-top: 2.25rem; }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  2. Left sidebar: title, search, tree, captions, guide lines, active bar
+// ═══════════════════════════════════════════════════════════════════════
+.sidebar.left {
+  font-size: 0.84rem;
+
+  .page-title {
+    margin: 0;
+    font-size: 0.98rem;
+    line-height: 1.3;
+    font-weight: 600;
+    letter-spacing: 0.005em;
+    a { color: var(--mt-fg-strong); font-weight: 600; background: none; }
+  }
+
+  // search button looks like a text box
+  .search .search-button {
+    min-height: 1.9rem;
+    border-radius: 2px;
+    border: 1px solid var(--mt-rule-strong);
+    background: var(--mt-bg);
+    font-size: 0.82rem;
+    p { color: var(--mt-faint); }
+    svg { fill: var(--mt-faint); }
+    &:hover, &:focus-within { border-color: var(--mt-link); }
+  }
+  .search-container .search-space {
+    background: var(--mt-bg);
+    border: 1px solid var(--mt-rule-strong);
+    border-radius: 2px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+  }
+  .search-container .search-bar {
+    border-radius: 2px;
+    border: 1px solid var(--mt-rule-strong);
+    background: var(--mt-bg);
+    color: var(--mt-fg);
+  }
+}
+
+// the Explorer
+.explorer {
+  button.desktop-explorer h2,
+  button.mobile-explorer h2 {
+    font-family: var(--mt-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--mt-muted);
+  }
+  .explorer-content { margin-top: 0.3rem; }
+
+  // page rows
+  .explorer-content ul li > a {
+    display: block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    color: var(--mt-fg);
+    opacity: 1;
+    font-size: 0.84rem;
+    line-height: 1.3;
+    background: none;
+    &:hover { background: var(--mt-surface-2); color: var(--mt-fg-strong); }
+  }
+  // the current page
+  .explorer-content ul li > a.active {
+    color: var(--mt-fg-strong);
+    font-weight: 600;
+    background: #{tint(--mt-accent, 9%)};
+    box-shadow: inset 2px 0 0 var(--mt-accent);
+  }
+
+  // folders
+  .folder-container { border-radius: 2px; &:hover { background: var(--mt-surface-2); } }
+  .folder-container div > a,
+  .folder-container div > button span {
+    font-family: var(--bodyFont);
+    font-size: 0.84rem;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--mt-fg);
+    padding: 0.2rem 0.1rem;
+  }
+  .folder-container div > a:hover { color: var(--mt-fg-strong); }
+  .folder-icon { margin: 0 0.3rem 0 0.35rem; color: var(--mt-faint); &:hover { color: var(--mt-accent); } }
+  li:has(a.active) > .folder-container div > a,
+  li:has(a.active) > .folder-container div > button span { color: var(--mt-fg-strong); }
+
+  // nested levels: vertical guide line, like a file tree
+  .folder-outer > ul {
+    margin-left: 0.65rem;
+    padding-left: 0.35rem;
+    border-left: 1px solid var(--mt-rule);
+  }
+
+  // top-level folders become captions (Sphinx/Furo "caption-text")
+  .explorer-ul > li:has(> .folder-outer) {
+    margin-top: 0.7rem;
+    > .folder-container {
+      &:hover { background: transparent; }
+      div > a, div > button span {
+        font-family: var(--mt-mono);
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--mt-muted);
+      }
+      div > a:hover { color: var(--mt-accent); }
+    }
+    > .folder-outer > ul { margin-left: 0.15rem; padding-left: 0; border-left-color: transparent; }
+  }
+  .explorer-ul > li:not(:has(> .folder-outer)) + li:has(> .folder-outer) {
+    border-top: 1px solid var(--mt-rule);
+    padding-top: 0.45rem;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  3. Right margin: "On this page"
+// ═══════════════════════════════════════════════════════════════════════
+.sidebar.right {
+  font-size: 0.82rem;
+
+  .toc {
+    button.toc-header h3 {
+      font-family: var(--mt-mono);
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--mt-muted);
+      margin: 0 0 0.35rem;
+    }
+    ul.toc-content.overflow > li > a {
+      display: block;
+      padding: 0.12rem 0 0.12rem 0.5rem;
+      line-height: 1.3;
+      color: var(--mt-muted);
+      opacity: 1;
+      border-left: 2px solid transparent;
+      background: none;
+      &:hover { color: var(--mt-fg-strong); }
+      &.in-view {
+        color: var(--mt-fg-strong);
+        border-left-color: var(--mt-accent);
+        font-weight: 500;
+      }
+    }
+    @for $i from 0 through 5 {
+      ul.toc-content.overflow > li.depth-#{$i} { padding-left: calc(0.8rem * #{$i}); }
+    }
+  }
+  // backlinks / graph captions share the same small-caps label
+  .backlinks > h3, .graph > h3 {
+    font-family: var(--mt-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--mt-muted);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  4. Title block → spec sheet (title, breadcrumbs, content meta, properties)
+// ═══════════════════════════════════════════════════════════════════════
+.page-header {
+  .breadcrumb-container {
+    margin: 0 0 0.4rem;
+    font-family: var(--mt-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    .breadcrumb-element p { margin: 0 0.25rem; color: var(--mt-faint); }
+    a { color: var(--mt-muted); background: none; text-decoration: none; padding: 0; }
+    a:hover { color: var(--mt-accent); }
+  }
+
+  .article-title {
+    margin: 0 0 0.6rem;
+    font-size: 1.85rem;
+    font-weight: 600;
+    letter-spacing: -0.012em;
+    color: var(--mt-fg-strong);
+  }
+
+  .content-meta {
+    margin: 0 0 0.9rem;
+    font-family: var(--mt-mono);
+    font-size: 0.72rem;
+    color: var(--mt-muted);
+    opacity: 1;
+  }
+
+  // frontmatter properties (note-properties plugin) as a bordered sheet
+  .note-properties {
+    margin: 0.5rem 0 1rem;
+    border: 1px solid var(--mt-rule);
+    border-radius: 2px;
+    font-size: 0.86rem;
+    background: transparent;
+    .note-properties-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.65rem;
+      background: var(--mt-surface);
+      font-family: var(--mt-mono);
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--mt-muted);
+      cursor: pointer;
+    }
+    &[open] > .note-properties-header { border-bottom: 1px solid var(--mt-rule); }
+    .note-properties-table { width: 100%; border-collapse: collapse; margin: 0; }
+    .note-properties-table :is(th, td) {
+      padding: 0.22rem 0.65rem;
+      border: 0;
+      border-bottom: 1px solid var(--mt-rule);
+      vertical-align: top;
+      background: transparent;
+    }
+    .note-properties-table tr:last-child :is(th, td) { border-bottom: 0; }
+    .note-properties-table :is(th, td):first-child {
+      width: 9rem;
+      font-family: var(--mt-mono);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--mt-muted);
+    }
+    .note-properties-link { color: var(--mt-link); background: none; }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  5. Body typography
+// ═══════════════════════════════════════════════════════════════════════
+article {
+  hyphens: manual;
+
+  p { margin: 0 0 0.7rem; }
+  ul, ol { padding-left: 1.35rem; margin: 0 0 0.75rem; }
+  li { margin: 0.12rem 0; }
+  li > p { margin-bottom: 0.25rem; }
+  li > ul, li > ol { margin-top: 0.1rem; margin-bottom: 0.2rem; }
+  ol > li::marker { font-family: var(--mt-mono); font-size: 0.9em; color: var(--mt-muted); }
+  ul > li::marker { color: var(--mt-faint); }
+
+  h1, h2, h3, h4, h5, h6 { color: var(--mt-fg-strong); scroll-margin-top: 4rem; }
+  h2 {
+    margin: 2.1rem 0 0.7rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--mt-rule);
+    letter-spacing: -0.005em;
+  }
+  h3 { margin: 1.6rem 0 0.5rem; }
+  h4 {
+    margin: 1.3rem 0 0.4rem;
+    font-family: var(--mt-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--mt-muted);
+  }
+  h5, h6 { margin-top: 1rem; font-weight: 600; }
+
+  // heading anchors
+  a.internal-link-anchor, h1 > a[role="anchor"], h2 > a[role="anchor"], h3 > a[role="anchor"],
+  h4 > a[role="anchor"], h5 > a[role="anchor"], h6 > a[role="anchor"] {
+    color: var(--mt-faint);
+    font-family: var(--mt-mono);
+    background: none;
+    text-decoration: none;
+    &:hover { color: var(--mt-accent); }
+  }
+
+  // house emphasis: bold = term (orange), italic = concept (teal)
+  :is(p, li, td, dd) > :is(strong, b) { color: var(--mt-accent); font-weight: 600; }
+  :is(p, li, td, dd) > em { color: var(--mt-teal); }
+
+  // links: blue + thin underline, never confused with teal italics
+  a:not([role="anchor"]):not(.tag-link):not(.clipboard-button):not([data-footnote-ref]):not([data-footnote-backref]) {
+    background: none;
+    color: var(--mt-link);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    text-decoration-color: #{tint(--mt-link, 35%)};
+    padding: 0;
+    &:hover { color: var(--mt-link); text-decoration-color: currentColor; }
+    // links that wrap code keep the code colour
+    > code { color: inherit; }
+  }
+
+  hr { margin: 1.5rem 0; border: 0; border-top: 1px solid var(--mt-rule); }
+
+  blockquote:not(.callout) {
+    font-size: 0.95rem;
+    color: var(--mt-muted);
+    border-left: 3px solid var(--mt-rule-strong);
+    padding: 0.1rem 0 0.1rem 0.9rem;
+    margin: 1rem 0;
+  }
+
+  figcaption, caption {
+    font-size: 0.8rem;
+    color: var(--mt-muted);
+    line-height: 1.4;
+    text-align: left;
+  }
+
+  // footnotes
+  section[data-footnotes], .footnotes {
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--mt-muted);
+    border-top: 1px solid var(--mt-rule);
+    padding-top: 0.5rem;
+    margin-top: 2rem;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  6. Code
+// ═══════════════════════════════════════════════════════════════════════
+:not(pre) > code {
+  font-size: 0.86em;
+  padding: 0.06em 0.32em;
+  border: 1px solid var(--mt-rule);
+  border-radius: 2px;
+  background: var(--mt-code-bg);
+  color: var(--mt-code-fg);
+  overflow-wrap: anywhere;
+}
+
+figure[data-rehype-pretty-code-figure] {
+  position: relative;
+  margin: 0.7rem 0 1rem;
+  background: var(--mt-block-bg);
+  border: 1px solid var(--mt-rule);
+  border-left: 3px solid var(--mt-rule-strong);
+  border-radius: 2px;
+
+  > pre {
+    margin: 0;
+    padding: 0.55rem 0.2rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    &:has(> code[data-line-numbers]) { padding-left: 0; }
+  }
+  // language label, from pre[data-language] (replaces tools.html's data-lang)
+  > pre[data-language]::before {
+    content: attr(data-language);
+    position: absolute;
+    top: 0;
+    right: 2.3rem;
+    font-family: var(--mt-mono);
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mt-faint);
+    padding: 0.3rem 0.35rem;
+    pointer-events: none;
+    z-index: 1;
+  }
+  // file name chip (```py title="x.py")
+  > [data-rehype-pretty-code-title] {
+    margin: 0;
+    padding: 0.25rem 0.65rem;
+    background: var(--mt-surface);
+    border-bottom: 1px solid var(--mt-rule);
+    font-family: var(--mt-mono);
+    font-size: 0.72rem;
+    color: var(--mt-muted);
+  }
+  &:has(> [data-rehype-pretty-code-title]) > pre[data-language]::before { display: none; }
+  .clipboard-button { top: 0.15rem; right: 0.15rem; }
+  // Quartz numbers code lines by default; the Quarto theme did not.
+  // Delete this rule to show line numbers.
+  code > [data-line]::before { display: none; }
+}
+// plain (no figure) blocks
+article > pre {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  background: var(--mt-block-bg);
+  border: 1px solid var(--mt-rule);
+  border-left: 3px solid var(--mt-rule);
+  border-radius: 2px;
+  padding: 0.5rem 0.75rem;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  7. Tables: hairline grid, tinted head, tabular numbers
+// ═══════════════════════════════════════════════════════════════════════
+article table {
+  font-size: 0.86rem;
+  margin: 0.5rem 0 1.25rem;
+  border: 1px solid var(--mt-rule);
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+
+  th, td {
+    border: 1px solid var(--mt-rule);
+    padding: 0.28rem 0.55rem;
+    vertical-align: top;
+    background: transparent;
+  }
+  thead th {
+    background: var(--mt-surface);
+    color: var(--mt-fg-strong);
+    font-family: var(--bodyFont);
+    font-weight: 600;
+    font-size: 0.8rem;
+    border-bottom: 1px solid var(--mt-rule-strong);
+    white-space: nowrap;
+  }
+  tbody tr:nth-child(even) > * { background: #{tint(--mt-fg, 2.5%)}; }
+  tbody tr:hover > * { background: #{tint(--mt-accent, 5%)}; }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  8. Callouts: squared, compact, mono header   (> [!note] Title)
+// ═══════════════════════════════════════════════════════════════════════
+@mixin callout-color($token) {
+  --color: var(#{$token});
+  --border: #{tint($token, 35%)};
+  --bg: #{tint($token, 5%)};
+}
+
+.callout {
+  padding: 0;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--color);
+  border-radius: 2px;
+  background: var(--bg);
+
+  > .callout-title {
+    padding: 0.28rem 0.6rem;
+    gap: 0.45rem;
+    align-items: center;
+    background: color-mix(in srgb, var(--color) 9%, transparent);
+    color: var(--color);
+    font-family: var(--mt-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    --icon-size: 0.85rem;
+    .callout-icon { width: 0.85rem; height: 0.85rem; flex: none; }
+    .callout-title-inner p { margin: 0; }
+  }
+  > .callout-content {
+    padding: 0.1rem 0.75rem;
+    font-size: 0.9rem;
+    > :first-child { margin-top: 0.45rem; }
+    > :last-child { margin-bottom: 0.45rem; }
+  }
+}
+// Obsidian callout types → house tokens
+.callout:is([data-callout="note"], [data-callout="info"], [data-callout="todo"],
+            [data-callout="abstract"], [data-callout="summary"], [data-callout="tldr"]) { @include callout-color(--mt-info); }
+.callout:is([data-callout="tip"], [data-callout="hint"], [data-callout="success"],
+            [data-callout="check"], [data-callout="done"]) { @include callout-color(--mt-ok); }
+.callout:is([data-callout="warning"], [data-callout="caution"], [data-callout="attention"],
+            [data-callout="question"], [data-callout="help"], [data-callout="faq"]) { @include callout-color(--mt-warn); }
+.callout:is([data-callout="danger"], [data-callout="error"], [data-callout="failure"],
+            [data-callout="fail"], [data-callout="missing"], [data-callout="bug"]) { @include callout-color(--mt-err); }
+.callout:is([data-callout="important"]) { @include callout-color(--mt-accent); }
+.callout:is([data-callout="quote"], [data-callout="cite"]) { @include callout-color(--mt-muted); }
+
+// ═══════════════════════════════════════════════════════════════════════
+//  9. Theorem-type blocks, numbered with CSS counters
+//
+//     > [!theorem] Cauchy–Schwarz          (boxed, numbered "Thm 1")
+//     > …
+//     > [!proof]                           (dashed rule, ends with ∎)
+//
+//  Types: theorem lemma corollary proposition conjecture definition
+//         example exercise  (numbered)  ·  proof remark solution (unnumbered)
+//  Numbering is per page and per type. There is no @-reference to a number
+//  (Quartz has no cross-reference system): link to the heading instead.
+// ═══════════════════════════════════════════════════════════════════════
+article { counter-reset: thm lem cor prp cnj def exm exr; }
+
+@mixin numbered($type, $ctr, $abbr) {
+  .callout[data-callout="#{$type}"] {
+    counter-increment: #{$ctr};
+    > .callout-title::after {
+      content: "#{$abbr} " counter(#{$ctr});
+      margin-left: auto;
+      font-family: var(--mt-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: var(--mt-faint);
+    }
+  }
+}
+@include numbered("theorem", thm, "Thm");
+@include numbered("lemma", lem, "Lem");
+@include numbered("corollary", cor, "Cor");
+@include numbered("proposition", prp, "Prop");
+@include numbered("conjecture", cnj, "Conj");
+@include numbered("definition", def, "Def");
+@include numbered("example", exm, "Ex");
+@include numbered("exercise", exr, "Exr");
+
+.callout:is([data-callout="theorem"], [data-callout="lemma"], [data-callout="corollary"],
+            [data-callout="proposition"], [data-callout="conjecture"], [data-callout="definition"],
+            [data-callout="example"], [data-callout="exercise"]) {
+  --color: var(--mt-accent);
+  --border: var(--mt-rule);
+  --bg: #{tint(--mt-accent, 3.5%)};
+  margin: 1rem 0;
+  > .callout-title {
+    background: transparent;
+    color: var(--mt-fg-strong);
+    font-size: 0.78rem;
+    letter-spacing: 0.03em;
+    text-transform: none;
+    padding: 0.4rem 0.8rem 0;
+    .callout-icon { display: none; }
+  }
+  > .callout-content { padding: 0 0.8rem; font-size: 1rem; }
+}
+.callout[data-callout="definition"] { --color: var(--mt-teal); --bg: #{tint(--mt-teal, 4.5%)}; }
+.callout:is([data-callout="example"], [data-callout="exercise"]) {
+  --color: var(--mt-rule-strong);
+  --bg: var(--mt-surface);
+}
+.callout[data-callout="conjecture"] { border-left-style: dashed; }
+
+.callout:is([data-callout="proof"], [data-callout="remark"], [data-callout="solution"]) {
+  --color: var(--mt-rule-strong);
+  --border: transparent;
+  --bg: transparent;
+  margin: 0.4rem 0 1.1rem;
+  border: 0;
+  border-left: 1px dashed var(--mt-rule-strong);
+  border-radius: 0;
+  > .callout-title {
+    background: transparent;
+    padding: 0.1rem 0.9rem 0;
+    color: var(--mt-muted);
+    font-size: 0.78rem;
+    font-style: italic;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: none;
+    .callout-icon { display: none; }
+    .callout-title-inner p::after { content: "."; }
+  }
+  > .callout-content { padding: 0 0 0 0.9rem; font-size: 1rem; }
+}
+.callout[data-callout="proof"] > .callout-content > :last-child::after {
+  content: "∎";
+  float: right;
+  color: var(--mt-muted);
+  margin-left: 1rem;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  10. Footer, popovers, mermaid
+// ═══════════════════════════════════════════════════════════════════════
+.page footer {
+  font-size: 0.76rem;
+  border-top: 1px solid var(--mt-rule);
+  padding: 0.5rem 0;
+  margin-top: 2.5rem;
+  opacity: 1;
+  a { color: var(--mt-muted); background: none; }
+  a:hover { color: var(--mt-accent); }
+}
+
+.popover > .popover-inner {
+  border: 1px solid var(--mt-rule-strong);
+  border-radius: 2px;
+  background: var(--mt-bg);
+}
+
+// mermaid edge labels ignore the palette unless forced
+.edgeLabel, .edgeLabel p, .edgeLabel rect, .labelBkg {
+  background-color: var(--mt-bg) !important;
+  fill: var(--mt-bg) !important;
+  color: var(--mt-fg) !important;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  11. Author utilities (inline HTML in Markdown)
+//      <span class="tag accent">UNIG-1</span>   (also .ok .warn .err .info)
+//      <dl class="spec"><dt>Key</dt><dd>Value</dd></dl>
+//      <div class="compact"> … </div>   or frontmatter  cssclasses: [compact]
+// ═══════════════════════════════════════════════════════════════════════
+.tag {
+  display: inline-block;
+  font-family: var(--mt-mono);
+  font-size: 0.74em;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.03em;
+  padding: 0.02em 0.42em;
+  border: 1px solid var(--mt-rule-strong);
+  border-radius: 2px;
+  background: var(--mt-surface);
+  color: var(--mt-fg);
+  vertical-align: 0.08em;
+  white-space: nowrap;
+  &.accent { color: var(--mt-accent); border-color: #{tint(--mt-accent, 55%)}; background: #{tint(--mt-accent, 7%)}; }
+  &.ok     { color: var(--mt-ok);     border-color: #{tint(--mt-ok, 50%)};     background: #{tint(--mt-ok, 7%)}; }
+  &.warn   { color: var(--mt-warn);   border-color: #{tint(--mt-warn, 50%)};   background: #{tint(--mt-warn, 8%)}; }
+  &.err    { color: var(--mt-err);    border-color: #{tint(--mt-err, 50%)};    background: #{tint(--mt-err, 7%)}; }
+  &.info   { color: var(--mt-info);   border-color: #{tint(--mt-info, 50%)};   background: #{tint(--mt-info, 7%)}; }
+}
+
+article dl.spec, article .spec > dl {
+  display: grid;
+  grid-template-columns: minmax(8rem, max-content) 1fr;
+  border: 1px solid var(--mt-rule);
+  border-radius: 2px;
+  margin: 0.5rem 0 1.1rem;
+  font-size: 0.88rem;
+  > dt {
+    margin: 0;
+    padding: 0.32rem 0.7rem;
+    background: var(--mt-surface);
+    border-right: 1px solid var(--mt-rule);
+    border-bottom: 1px solid var(--mt-rule);
+    font-family: var(--mt-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--mt-muted);
+  }
+  > dd {
+    margin: 0;
+    padding: 0.3rem 0.7rem;
+    border-bottom: 1px solid var(--mt-rule);
+    > p { margin: 0; }
+  }
+  > dt:last-of-type, > dd:last-of-type { border-bottom: 0; }
+}
+article dl:not(.spec) {
+  > dt { font-weight: 600; color: var(--mt-fg-strong); margin-top: 0.45rem; }
+  > dd { margin-left: 1.4rem; margin-bottom: 0.35rem; }
+}
+
+.compact {
+  li { margin: 0; }
+  p { margin-bottom: 0.4rem; }
+  table th, table td { padding: 0.14rem 0.4rem; }
+}

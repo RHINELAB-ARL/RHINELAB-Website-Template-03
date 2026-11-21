@@ -1,17 +1,67 @@
 ---
-title: WT1 - Core Documentation Template
+title: Welcome to Quartz 5
 ---
 
-This is the core documentation template for all **core website deployment and documentation** of individual groups or sub-lab within RHINELAB. The template uses *Quartz 4*, from [Jacky Zhao and his project](https://quartz.jzhao.xyz/) - courtesy for his platform, I guess. If you want to deploy it on GitHub, simply fork [this repository with it](https://github.com/jackyzha0/quartz). 
+Quartz is a fast, batteries-included static-site generator that transforms Markdown content into fully functional websites. Thousands of students, developers, and teachers are [[showcase|already using Quartz]] to publish personal notes, websites, and [digital gardens](https://jzhao.xyz/posts/networked-thought) to the web.
 
-The template is easy to use. Right now, almost all contents would be stored in `\content` folder, and nested around. Unlike other template, this time, the file is plain `.md` Markdown, not flavoured Markdown like `.qmd`. The syntax by then is almost the same. For information regarding different features of this template and Quartz architecture, see in the main website, for example, here's an entry on [LaTeX and mathematical notations](https://quartz.jzhao.xyz/features/Latex), which proves helpful for technical notes of this caliber. 
+## 🪴 Get Started
 
-The system is also of mind with similarity of purpose like **Obsidian.md**, as many in the laboratory is familiar with. It provides features like **backlinks**, and so on, which are useful for knowledge base and organizational system. For usage of Obsidian, see [this developer page](https://docs.obsidian.md/Home) for certain features (I know someone who would tinker with this there), and the [basic help page dubbed as also tutorial](https://obsidian.md/help/). Most of the features are transferable, but refer to Quartz documentation for certain restriction in conversion of platforms. 
+Quartz requires **at least [Node](https://nodejs.org/) v22** and `npm` v10.9.2 to function correctly. Ensure you have these installed on your machine before continuing. See the [[getting-started/index#Prerequisites|prerequisites]] for help installing them.
 
+> [!tip] GitHub users
+> You can also use the **[GitHub template](https://github.com/jackyzha0/quartz/generate)** to create your repository in one click, then clone that instead. See [[installation#Option A Use the GitHub Template Recommended|Option A]] in the installation guide.
 
+```shell
+# 1. Clone the Quartz repository
+git clone https://github.com/jackyzha0/quartz.git
+cd quartz
 
+# 2. Install dependencies
+npm i
 
+# 3. Initialize your site (choose a template, set your base URL, import content)
+#    This also installs the plugins your template uses
+npx quartz create
 
+# 4. Preview your site locally
+npx quartz build --serve
+```
 
+Your site is now running at `http://localhost:8080`. From here:
 
+- **[[authoring-content|Write content]]** in the `content/` folder
+- **[[installation|Push to GitHub]]** with `npx quartz sync`
+- **[[hosting|Deploy]]** to GitHub Pages, Cloudflare, Netlify, or Vercel
 
+For the full walkthrough, see the [[getting-started/index|Getting Started]] guide.
+
+### Returning User?
+
+Already have a Quartz repository and cloning it on a new machine?
+
+```shell
+git clone https://github.com/<your-username>/<your-repo>.git
+cd <your-repo>
+npm ci
+npx quartz plugin install
+npx quartz build --serve
+```
+
+> [!tip]
+> If you hit build errors on a fresh clone, try `npx quartz plugin install --latest` to refresh plugins to their latest versions. See [[troubleshooting#Plugins fail to build on a fresh clone]] for details.
+
+## 🔧 Features
+
+- [[Obsidian compatibility]], [[full-text search]], [[graph view]], [[wikilinks|wikilinks, transclusions]], [[plugins/Backlinks]], [[features/Latex|Latex]], [[syntax highlighting]], [[popover previews]], [[Docker Support]], [[i18n|internationalization]], [[features/comments|comments]] and [many more](./features/) right out of the box
+- Hot-reload on configuration edits and incremental rebuilds for content edits
+- Simple JSX layouts and [[creating components|page components]]
+- [[SPA Routing|Ridiculously fast page loads]] and tiny bundle sizes
+- Fully-customizable parsing, filtering, and page generation through [[making plugins|plugins]]
+
+For a comprehensive list of features, visit the [features page](./features/). You can read more about the _why_ behind these features on the [[philosophy]] page and a technical overview on the [[architecture]] page.
+
+### 🚧 Troubleshooting + Updating
+
+Having trouble with Quartz? Try searching for your issue using the search feature or check the [[troubleshooting]] page. If you haven't already, [[upgrading|upgrade]] to the newest version of Quartz to see if this fixes your issue.
+
+If you're still having trouble, feel free to [submit an issue](https://github.com/jackyzha0/quartz/issues) if you feel you found a bug (include the output of `npx quartz info`) or ask for help in our [Discord Community](https://discord.gg/cRFFHYye7t). You can also browse the [[community]] page for third-party plugins and resources.

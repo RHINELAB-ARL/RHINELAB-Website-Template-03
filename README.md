@@ -1,3 +1,17 @@
-# WT1 - Core Documentation Template
+# Quartz v5
 
-Core documentation template for all core sections on website per-sub-lab or group. Based on [Quartz](https://quartz.jzhao.xyz/) as standard baseline. If you want to use this (lab member), please **fork the repository**, as seen of [GitLab Fork Guideline](https://docs.gitlab.com/user/project/repository/forking_workflow/), and deploy it on the same domain of RHINELAB. We are testing that for a while now so new members can do it too, but it will take time to tell you all of that, so please ask in the Discord server if able. 
+> “[One] who works with the door open gets all kinds of interruptions, but [they] also occasionally gets clues as to what the world is and what might be important.” — Richard Hamming
+
+Quartz is a set of tools that helps you publish your [digital garden](https://jzhao.xyz/posts/networked-thought) and notes as a website for free.
+
+🔗 Read the documentation and get started: https://quartz.jzhao.xyz/
+
+[Join the Discord Community](https://discord.gg/cRFFHYye7t)
+
+## Sponsors
+
+<p align="center">
+  <a href="https://github.com/sponsors/jackyzha0">
+    <img src="https://cdn.jsdelivr.net/gh/jackyzha0/jackyzha0/sponsorkit/sponsors.svg" />
+  </a>
+</p>

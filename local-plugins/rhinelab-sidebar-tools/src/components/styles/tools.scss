@@ -1,0 +1,104 @@
+// Toolbar above the Explorer. Uses the --mt-* tokens from custom.scss and
+// falls back to Quartz's own variables, so it also works unthemed.
+.mt-tools {
+  margin: 0 0 0.6rem;
+
+  .mt-toolbar {
+    display: flex;
+    align-items: stretch;
+    gap: 0.3rem;
+  }
+
+  .mt-filter {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0 0.5rem;
+    height: 1.9rem;
+    border: 1px solid var(--mt-rule-strong, var(--lightgray));
+    border-radius: 2px;
+    background: var(--mt-bg, var(--light));
+    color: var(--mt-muted, var(--gray));
+    cursor: text;
+    transition: border-color 0.12s, box-shadow 0.12s;
+
+    &:focus-within {
+      border-color: var(--mt-link, var(--secondary));
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--mt-link, var(--secondary)) 18%, transparent);
+    }
+
+    svg { flex: none; }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--mt-fg, var(--darkgray));
+      font: inherit;
+      font-size: 0.8rem;
+      padding: 0;
+      appearance: none;
+      &::-webkit-search-cancel-button { display: none; }
+      &::placeholder { color: var(--mt-faint, var(--gray)); }
+    }
+
+    kbd {
+      flex: none;
+      font-family: var(--codeFont);
+      font-size: 0.66rem;
+      line-height: 1;
+      padding: 0.12rem 0.34rem;
+      border: 1px solid var(--mt-rule-strong, var(--lightgray));
+      border-bottom-width: 2px;
+      border-radius: 2px;
+      background: var(--mt-surface, var(--lightgray));
+      color: var(--mt-muted, var(--gray));
+    }
+  }
+
+  .mt-btn {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    padding: 0;
+    border: 1px solid var(--mt-rule-strong, var(--lightgray));
+    border-radius: 2px;
+    background: var(--mt-bg, var(--light));
+    color: var(--mt-muted, var(--gray));
+    cursor: pointer;
+    transition: color 0.12s, border-color 0.12s, background 0.12s;
+
+    &:hover {
+      color: var(--mt-link, var(--secondary));
+      border-color: var(--mt-link, var(--secondary));
+      background: var(--mt-surface, var(--lightgray));
+    }
+    &:focus-visible {
+      outline: 2px solid var(--mt-link, var(--secondary));
+      outline-offset: 1px;
+    }
+  }
+
+  .mt-empty {
+    margin: 0.5rem 0.2rem 0;
+    font-size: 0.78rem;
+    font-style: italic;
+    color: var(--mt-faint, var(--gray));
+  }
+}
+
+// filtering state inside the Explorer
+.explorer-ul {
+  li.mt-hide { display: none; }
+  li.mt-match > a,
+  li.mt-match > .folder-container .folder-title {
+    background: color-mix(in srgb, var(--mt-teal, var(--tertiary)) 16%, transparent);
+    border-radius: 2px;
+  }
+}

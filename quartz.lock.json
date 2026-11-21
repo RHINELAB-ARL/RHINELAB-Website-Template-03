@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "plugins": {
+    "rhinelab-page-panel": {
+      "source": "./local-plugins/rhinelab-page-panel",
+      "resolved": "E:\\Core\\Public Directory\\RHINALAB-RHINELAB\\RHINELAB@UNIG-2-LOGIT\\RHINE-WTEMPLATE\\WT1\\local-plugins\\rhinelab-page-panel",
+      "commit": "local",
+      "installedAt": "2026-11-21T03:57:36.598Z"
+    },
+    "rhinelab-sidebar-tools": {
+      "source": "./local-plugins/rhinelab-sidebar-tools",
+      "resolved": "E:\\Core\\Public Directory\\RHINALAB-RHINELAB\\RHINELAB@UNIG-2-LOGIT\\RHINE-WTEMPLATE\\WT1\\local-plugins\\rhinelab-sidebar-tools",
+      "commit": "local",
+      "installedAt": "2026-11-21T03:57:09.206Z"
+    }
+  }
+}

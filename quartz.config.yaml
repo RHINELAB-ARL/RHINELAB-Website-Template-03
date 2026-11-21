@@ -1,0 +1,311 @@
+# yaml-language-server: $schema=./quartz/plugins/quartz-plugins.schema.json
+configuration:
+  pageTitle: RHINELAB Docs
+  pageTitleSuffix: ""
+  enableSPA: true
+  enablePopovers: true
+  prefetch: viewport
+  analytics: null
+  locale: en-GB
+  baseUrl: docs.example.org   # <- your real domain (no https://, no trailing slash)
+  ignorePatterns:
+    - private
+    - templates
+    - .obsidian
+  theme:
+    fontOrigin: googleFonts
+    cdnCaching: true
+    typography:
+      header: IBM Plex Sans
+      body: IBM Plex Sans
+      code: IBM Plex Mono
+    # The seven Quartz colour keys. All other RHINELAB tokens live in quartz/styles/custom.scss.
+    colors:
+      lightMode:
+        light: "#ffffff"        # --mt-bg
+        lightgray: "#d9dde2"    # --mt-rule
+        gray: "#56606b"         # --mt-muted
+        darkgray: "#1f2328"     # --mt-fg
+        dark: "#0b0f14"         # --mt-fg-strong
+        secondary: "#0b5cad"    # --mt-link
+        tertiary: "#c2510a"     # --mt-accent (house orange)
+        highlight: "#e9ecf0"    # --mt-surface-2
+        textHighlight: "#fff23688"
+      darkMode:
+        light: "#131518"
+        lightgray: "#2c3138"
+        gray: "#939ba6"
+        darkgray: "#d2d6dc"
+        dark: "#f0f2f5"
+        secondary: "#6aaeff"
+        tertiary: "#f08c4a"
+        highlight: "#23272d"
+        textHighlight: "#b3aa0288"
+  links:
+    markdownLinkResolution: shortest
+  contentIndex:
+    enableSiteMap: true
+    enableRSS: true
+plugins:
+  - source: "@quartz-community/created-modified-date"
+    enabled: true
+    options:
+      defaultDateType: modified
+      priority:
+        - frontmatter
+        - git
+        - filesystem
+    order: 10
+  - source: "@quartz-community/syntax-highlighting"
+    enabled: true
+    options:
+      theme:
+        light: github-light
+        dark: github-dark
+      keepBackground: false
+    order: 20
+  - source: "@quartz-community/github-flavored-markdown"
+    enabled: true
+    order: 30
+  - source: "@quartz-community/obsidian-flavored-markdown"
+    enabled: true
+    options:
+      enableInHtmlEmbed: false
+      enableCheckbox: true
+    order: 40
+  - source: "@quartz-community/table-of-contents"
+    enabled: true
+    order: 50
+    layout:
+      position: right
+      priority: 30
+  - source: "@quartz-community/description"
+    enabled: true
+    order: 70
+  - source: "@quartz-community/latex"
+    enabled: true
+    options:
+      renderEngine: katex
+    order: 80
+  - source: "@quartz-community/citations"
+    enabled: false
+    order: 85
+  - source: "@quartz-community/ox-hugo"
+    enabled: false
+    order: 91
+  - source: "@quartz-community/roam"
+    enabled: false
+    order: 92
+  - source: "@quartz-themes/core"
+    enabled: false
+    options:
+      theme: tokyo-night
+      mode: both
+  - source: "@quartz-community/explicit-publish"
+    enabled: false
+  - source: "@quartz-community/alias-redirects"
+    enabled: true
+  - source: "@quartz-community/favicon"
+    enabled: true
+  - source: "@quartz-community/og-image"
+    enabled: true
+  - source: "@quartz-community/cname"
+    enabled: true
+  - source: "@quartz-community/canvas-page"
+    enabled: true
+  - source: "@quartz-community/content-page"
+    enabled: true
+  - source: "@quartz-community/folder-page"
+    enabled: true
+  - source: "@quartz-community/tag-page"
+    enabled: true
+  - source: "@quartz-community/explorer"
+    enabled: true
+    options:
+      title: Contents
+      folderDefaultState: collapsed
+      folderClickBehavior: link
+      useSavedState: true
+    layout:
+      position: left
+      priority: 50
+  - source: "@quartz-community/graph"
+    enabled: false              # set true for the graph view
+    layout:
+      position: right
+      priority: 10
+  - source: "@quartz-community/search"
+    enabled: true
+    layout:
+      position: left
+      priority: 20
+      group: toolbar
+      groupOptions:
+        grow: true
+  - source: "@quartz-community/backlinks"
+    enabled: true
+    layout:
+      position: right
+      priority: 50
+  - source: "@quartz-community/article-title"
+    enabled: true
+    layout:
+      position: beforeBody
+      priority: 10
+  - source: "@quartz-community/content-meta"
+    enabled: true
+    layout:
+      position: beforeBody
+      priority: 20
+  - source: "@quartz-community/tag-list"
+    enabled: false
+    layout:
+      position: beforeBody
+      priority: 30
+  - source: "@quartz-community/page-title"
+    enabled: true
+    layout:
+      position: left
+      priority: 10
+  - source: "@quartz-community/darkmode"
+    enabled: true
+    layout:
+      position: left
+      priority: 30
+      group: toolbar
+  - source: "@quartz-community/reader-mode"
+    enabled: true
+    layout:
+      position: left
+      priority: 35
+      group: toolbar
+  - source: "@quartz-community/breadcrumbs"
+    enabled: true
+    options:
+      spacerSymbol: "/"
+      showCurrentPage: true
+    layout:
+      position: beforeBody
+      priority: 5
+      condition: not-index
+  - source: "@quartz-community/comments"
+    enabled: false
+    options:
+      provider: giscus
+      options: {}
+    layout:
+      position: afterBody
+      priority: 10
+  - source: "@quartz-community/footer"
+    enabled: true
+    options:
+      message: RHINELAB
+      links: {}
+    layout:
+      position: footer
+      priority: 50
+  - source: "@quartz-community/graph"
+    enabled: true
+    layout:
+      position: right
+      priority: 10
+  - source: "@quartz-community/recent-notes"
+    enabled: false
+  - source: "@quartz-community/spacer"
+    enabled: true
+    options: {}
+    order: 25
+    layout:
+      position: left
+      priority: 25
+      display: mobile-only
+  - source: "@quartz-community/bases-page"
+    enabled: true
+    options: {}
+    order: 50
+  - source: "@quartz-community/note-properties"
+    enabled: true
+    options:
+      includeAll: false
+      includedProperties:
+        - description
+        - tags
+        - aliases
+      excludedProperties: []
+      hidePropertiesView: false
+    order: 5
+    layout:
+      position: beforeBody
+      priority: 15
+      display: all
+  - source: "@quartz-community/unlisted-pages"
+    enabled: true
+    options: {}
+    order: 45
+  - source: "@quartz-community/encrypted-pages"
+    enabled: true
+    options:
+      iterations: 600000
+      passwordField: password
+      unlistWhenEncrypted: false
+      outputPath: static/encryptedContentIndex.json
+    order: 900
+  - source: "@quartz-community/stacked-pages"
+    enabled: false
+    layout:
+      position: afterBody
+      priority: 50
+      display: all
+  # ── RHINELAB local plugins ──
+  - source: ./local-plugins/rhinelab-sidebar-tools
+    enabled: true
+    options:
+      placeholder: Filter pages
+      filterKey: t
+    order: 50
+    layout:
+      position: left
+      priority: 45              # directly above the Explorer (50)
+  - source: ./local-plugins/rhinelab-page-panel
+    enabled: true
+    options:
+      exclude:
+        - tags/
+        - "404"
+      wordsPerMinute: 220
+      showFilterKey: true
+      # editBaseUrl: https://github.com/ORG/REPO/edit/main/content/   # enables "Edit this page"
+      # issuesUrl: https://github.com/ORG/REPO/issues/new             # enables "Report an issue"
+    order: 50
+    layout:
+      position: left
+      priority: 60              # directly below the Explorer
+layout:
+  # static: sidebars scroll away with the page, so long navigation is never cut off
+  sidebars:
+    left: static
+    right: static
+  groups:
+    toolbar:
+      priority: 35
+      direction: row
+      gap: 0.5rem
+  byPageType:
+    "404":
+      positions:
+        beforeBody: []
+        left: []
+        right: []
+    content: {}
+    folder:
+      exclude:
+        - reader-mode
+      positions:
+        right: []
+    tag:
+      exclude:
+        - reader-mode
+      positions:
+        right: []
+    canvas: {}
+    bases: {}
